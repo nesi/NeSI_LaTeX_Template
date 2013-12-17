@@ -1,0 +1,201 @@
+\documentclass{beamer}
+\usepackage[english]{layout}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, soul, color, multicol, type1cm, verbatim, latexsym, dsfont, float, listings,alltt}
+\usepackage[official]{eurosym}
+\usepackage{beamerthemesplit}
+\usetheme{Frankfurt}
+\usefonttheme{professionalfonts}
+\setbeamercovered{transparent}
+%NeSI Colors <-------------------------------------------------------------------------------------
+\usecolortheme{lily}
+\usecolortheme[RGB={47, 68, 71}]{structure} 
+\definecolor{nesidark}{HTML}{2F4447}
+\definecolor{nesilight}{HTML}{CED9DF}
+\definecolor{nesigrey}{gray}{0.7}
+\definecolor{nesilightgrey}{gray}{0.98}
+\definecolor{nesidarkgrey}{gray}{0.3}
+\definecolor{nesiblue}{HTML}{2B9FC2}
+\setbeamercolor{block title}{fg=black,bg=nesigrey}
+\setbeamercolor{block body}{bg=nesilightgrey,fg=nesidarkgrey}
+\setbeamercolor{block body alerted}{bg=white,fg=black}
+\setbeamercolor{alerted text}{bg=white,fg=black}
+%NeSI Title <---------------------------------------------------------------------------------------
+\setbeamerfont{title}{size=\huge}
+\frenchspacing
+\hyphenation{NeSI}
+%NeSI Template parameters <-------------------------------------------------------------------------
+\setbeamertemplate{blocks}[default]
+\useinnertheme{circles}
+\setbeamertemplate{title page}[default][center,rounded=false,shadow=false]
+\newcommand\BackgroundPicture[1]{%
+\setbeamertemplate{background}{%
+\parbox[c][\paperheight]{\paperwidth}{%
+\vfill \hfill \includegraphics[height=0.9\paperheight]{#1}
+\hfill \vfill
+}}}
+
+%Content Starts Here <-------------------------------------------------------------------------------
+\title{Title}
+%\subtitle{Computational Science team}
+\author{Cool Staff Members use \LaTeX{} \\(cool.staff@nesi.org.nz)}
+\date{}
+
+\begin{document}
+
+{
+\setbeamertemplate{background canvas}{\includegraphics[height=0.99\paperheight]{NeSI_img/Slide00.png}} 
+\begin{frame}[plain]
+\vspace{1cm}
+\titlepage
+\end{frame}
+}
+
+
+% This will generate the outline. If you have several topics, uncomment the multicols 
+\begin{frame}
+\frametitle{Outline}
+% \begin{multicols}{2} 
+   \tableofcontents
+% \end{multicols}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Some Examples %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+\subsection{About Something}
+
+% Include Graphics <---
+\frame[t]
+{
+  \frametitle{About Something}
+\begin{center}
+ \includegraphics[width=0.9\textwidth]{NeSI_img/nesi_logo.png}
+\end{center}
+}
+
+% List with bullets (itemize) <---
+% The [<+-| alert@+>] will create a new slide for each element with highliting 
+\frame[t]
+{
+  \frametitle{About Something}
+   \begin{block}{About Something}
+   \begin{itemize}%[<+-| alert@+>]
+	\item one
+	\item two
+	\item three
+	\item four
+   \end{itemize}
+  \end{block}
+}
+
+% List with numbers (enumerate) <---
+% The [<+-| alert@+>] will create a new slide for each element with highliting 
+\frame[t]
+{
+  \frametitle{About Something}
+   \begin{block}{About Something}
+   \begin{enumerate}%[<+-| alert@+>]
+	\item one
+	\item two
+	\item three
+	\item four
+   \end{enumerate}
+  \end{block}
+}
+
+% If you want to include some code (verbatim or listings) you will need to add "fragile" in the frame options <---
+\section{Examples}
+\subsection{SMP}
+\begin{frame}[fragile]
+  \frametitle{Submitting a Job}
+      \begin{block}{Job Description Example : SMP}
+\begin{small}
+\begin{verbatim}
+#!/bin/bash
+#SBATCH -o /share/src/app/example/app-%j.%N.out
+#SBATCH -D /share/src/app/example
+#SBATCH -J MIGRATESMP
+#SBATCH --get-user-env
+#SBATCH --ntasks=1
+#SBATCH --cpu_bind=core
+#SBATCH --export=NONE
+#SBATCH --time=08:00:00
+ml load migrate/3.4.4-smp
+export OMP_NUM_THREADS=4
+srun migrate-n-thread parmfile.testml -nomenu
+\end{verbatim}
+\end{small}
+  \end{block}
+\end{frame}
+
+\subsection{MPI}
+\begin{frame}[fragile]
+  \frametitle{Submitting a Job}
+     \begin{block}{Job Description Example : MPI}
+\begin{small}
+\begin{verbatim}
+#!/bin/bash
+#SBATCH -o /share/src/app/example/app-%j.%N.out
+#SBATCH -D /share/src/app/example
+#SBATCH -J MIGRATEMPI
+#SBATCH --get-user-env
+#SBATCH --ntasks=2
+#SBATCH --cpu_bind=core
+#SBATCH --export=NONE
+#SBATCH --time=08:00:00
+ml load migrate/3.4.4-ompi
+srun migrate-n-mpi parmfile.testml -nomenu
+\end{verbatim}
+\end{small}
+  \end{block}
+\end{frame}
+
+\section{example2}
+\subsection{Parametric}
+\begin{frame}[fragile]
+  \frametitle{Submitting a Job}
+   \begin{block}{Parametric Job}
+To submit 50,000 element job array
+\verb|sbatch –array=1-50000 -N1 -i jobin_%a -o jobout_%a job.sh|
+Submit time < 1 second\\
+\verb|"%a”| in file name mapped to array index\\
+Additional environment variable with array index: \verb|SLURM_ARRAY_TASK_ID|\\
+ \end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Submitting a Job}
+   \begin{block}{Parametric Job}
+The management is really easy:
+\begin{verbatim}
+$ squeue
+JOBID PARTITION NODESLIST(REASON) 
+123_[2-50000] debug (Resources)
+123_1 debug tux0
+
+$ scancel 123_[40000-50000] 
+
+$ scontrol hold 123
+\end{verbatim}
+ \end{block}
+\end{frame}
+
+
+% End <-----------------------------------------------------------------------------------------
+{
+\setbeamertemplate{background canvas}{\includegraphics[height=0.99\paperheight]{NeSI_img/Slide00.png}} 
+\begin{frame}[plain]
+\begin{center}
+{\Huge Questions \& Answers}
+\end{center}
+\end{frame}
+}
+
+
+\end{document} 
